@@ -5,6 +5,7 @@ import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 dotenv.config();
 const API_URI = process.env.API_URI || "http://localhost:5000";
+const dev = process.env.NODE_ENV === "dev";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDBLkM_3EkF9JQdgxEBea_qdSii7GypW4U",
@@ -24,7 +25,7 @@ const findReadings = async () => {
     const response = await axios.get(`${API_URI}/api/readings?isInFirebase=false`);
     return response.data;
   } catch (error) {
-    console.error(error);
+    dev && console.error(error);
   }
 };
 
@@ -40,14 +41,15 @@ const sendToFirestore = async (readings) => {
       await delay(2000);
     });
   } catch (error) {
-    console.error(error);
+    dev && console.error(error);
   }
 };
 
+console.log("Sync service is running");
+
 setInterval(async () => {
   const readings = await findReadings();
-  if (readings.length > 0) {
-    console.log(readings);
+  if (readings && readings.length > 0) {
     await sendToFirestore(readings);
   }
 }, 2000);
