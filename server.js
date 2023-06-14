@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 dotenv.config();
-const API_URI = process.env.API_URI || "http://localhost:5000";
+const API_URI = process.env.API_URI || "http://localhost:5001";
 const dev = process.env.NODE_ENV === "dev";
 
 const firebaseConfig = {
@@ -21,6 +21,7 @@ const db = getFirestore(firebaseApp);
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const findReadings = async () => {
+  console.log(API_URI);
   try {
     const response = await axios.get(`${API_URI}/api/readings?isInFirebase=false`);
     return response.data;
